@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Research &amp; Write</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Karla:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEEAF2; --ink:#24162B; --soft:#5E5066; --plum:#6B2D5C; --gold:#E8A33D; --paper:#FFFFFF; --ok:#3E6B5E;
+  --display:"Bricolage Grotesque", "Arial Rounded MT Bold", "Segoe UI", sans-serif;
+  --body:"Karla", "Segoe UI", Helvetica, Arial, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:18px;line-height:1.5}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+button:disabled{opacity:.4;cursor:not-allowed}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 24px 64px}
+.screen{display:none}
+.screen.on{display:block}
+
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,7vw,4.8rem);line-height:.95;letter-spacing:-.03em;margin:0 0 14px;max-width:12ch}
+.lede{color:var(--soft);max-width:56ch;margin:0 0 22px;font-size:1.05rem}
+.steps{margin:0 0 28px;padding-left:1.3em;max-width:60ch}
+.steps li{margin:4px 0}
+.name{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 34px}
+.name label{font-weight:700}
+.name input{border:2px solid var(--ink);border-radius:999px;padding:10px 18px;background:var(--paper);min-width:240px}
+.name .warn{color:#A33B3B;font-weight:700;font-size:.95rem;display:none}
+.name.need .warn{display:inline}
+.name.need input{border-color:#A33B3B}
+
+.topics{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.topic{text-align:left;border:0;border-radius:4px 22px 4px 22px;padding:22px 20px 20px;min-height:200px;background:var(--c);color:var(--fg,#fff);display:flex;flex-direction:column;justify-content:space-between;transition:transform .15s ease}
+.topic:hover{transform:rotate(-1.2deg) translateY(-3px)}
+.topic .tag{display:inline-block;font-size:.8rem;font-weight:700;background:rgba(255,255,255,.2);padding:3px 10px;border-radius:999px;margin-top:16px}
+.topic .emoji{font-size:1.9rem;line-height:1}
+.topic strong{font-family:var(--display);font-weight:800;font-size:1.25rem;line-height:1.1;letter-spacing:-.01em;display:block;margin-top:10px}
+.topic span.hook{font-size:.92rem;opacity:.88;display:block;margin-top:6px;line-height:1.35}
+
+.back{background:none;border:0;padding:6px 0;color:var(--soft);font-weight:700;margin-bottom:22px}
+.back:hover{color:var(--ink)}
+.brief-head{background:var(--c);color:var(--fg,#fff);border-radius:4px 34px 4px 34px;padding:30px 30px 28px;margin-bottom:28px}
+.brief-head h2{font-family:var(--display);font-weight:800;font-size:clamp(2rem,5vw,3.2rem);line-height:1;letter-spacing:-.02em;margin:10px 0 14px}
+.find-label{font-weight:700;margin:0 0 6px}
+.find{margin:0;padding-left:1.2em;max-width:60ch}
+.find li{margin:4px 0}
+h3{font-family:var(--display);font-weight:600;font-size:1.4rem;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--soft);margin:0 0 18px;font-size:.98rem}
+.exprs{list-style:none;margin:0 0 30px;padding:0;display:grid;gap:10px}
+.exprs li{background:var(--paper);border-left:6px solid var(--c);border-radius:0 14px 14px 0;padding:16px 20px;animation:deal .35s ease both}
+.exprs li:nth-child(2){animation-delay:.07s}.exprs li:nth-child(3){animation-delay:.14s}.exprs li:nth-child(4){animation-delay:.21s}.exprs li:nth-child(5){animation-delay:.28s}
+@keyframes deal{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
+.ex-name{font-family:var(--display);font-weight:800;font-size:1.3rem;letter-spacing:-.01em}
+.ex-mean{color:var(--soft);display:block;font-size:.98rem}
+.ex-use{display:block;font-style:italic;margin-top:6px;font-size:.98rem}
+.rules{background:var(--paper);border-radius:14px;padding:16px 20px;margin:0 0 26px;max-width:70ch}
+.rules p{margin:0 0 6px}.rules p:last-child{margin:0}
+.controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.mins{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border-radius:999px;padding:4px 6px 4px 16px;font-weight:700}
+.mins-label{margin-right:6px}
+.mins button{border:0;background:var(--ink);color:#fff;width:36px;height:36px;border-radius:50%;font-weight:800;font-size:1.1rem;line-height:1}
+.mins button:hover{background:var(--plum)}
+.mins input{width:3.2em;border:0;background:transparent;text-align:center;font-weight:800;font-size:1.15rem;-moz-appearance:textfield}
+.mins input::-webkit-outer-spin-button,.mins input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.seg{display:inline-flex;background:var(--paper);border-radius:999px;padding:4px}
+.seg button{border:0;background:none;padding:10px 18px;border-radius:999px;font-weight:700}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.btn{border:0;border-radius:999px;padding:14px 26px;font-weight:700;font-size:1rem;text-decoration:none;display:inline-block}
+.btn.main{background:var(--ink);color:#fff}
+.btn.main:hover:not(:disabled){background:var(--plum)}
+.btn.wa{background:#1F7A4D;color:#fff}
+.btn.wa:hover{background:#17603C}
+.btn.ghost{background:transparent;box-shadow:inset 0 0 0 2px var(--ink)}
+.btn.ghost:hover:not(:disabled){background:var(--paper)}
+
+.timer-wrap{display:grid;grid-template-columns:1.25fr 1fr;gap:30px;align-items:start}
+.clock{background:var(--c);color:var(--fg,#fff);border-radius:4px 40px 4px 40px;padding:30px;position:relative;overflow:hidden;min-height:360px;display:flex;flex-direction:column;justify-content:space-between}
+.clock .drain{position:absolute;left:0;bottom:0;width:100%;background:rgba(0,0,0,.16);height:100%;transform-origin:bottom;transition:transform 1s linear}
+.clock > *{position:relative}
+.clock .topic-name{font-family:var(--display);font-weight:600;font-size:1.15rem}
+.time{font-family:var(--display);font-weight:800;font-size:clamp(5rem,16vw,9.5rem);line-height:.9;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.clock.last{animation:pulse 1s ease infinite}
+@keyframes pulse{50%{filter:brightness(1.12)}}
+.side h3{margin-bottom:12px}
+.mini{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:8px}
+.mini li{background:var(--paper);border-radius:12px;padding:10px 14px}
+.mini b{font-family:var(--display);font-weight:800;display:block;line-height:1.2}
+.mini small{color:var(--soft);font-size:.9rem}
+.tctrl{display:flex;flex-wrap:wrap;gap:10px}
+.note{color:var(--soft);font-size:.92rem;margin:12px 0 0}
+
+/* write */
+.write-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:28px;align-items:start}
+.write h2{font-family:var(--display);font-weight:800;font-size:clamp(2.2rem,6vw,3.6rem);line-height:.95;letter-spacing:-.03em;margin:0 0 10px}
+textarea{width:100%;min-height:340px;border:2px solid var(--ink);border-radius:4px 22px 4px 22px;padding:18px 20px;background:var(--paper);resize:vertical;line-height:1.6}
+.meta{display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;margin:10px 0 20px;color:var(--soft);font-size:.95rem}
+.meta b{color:var(--ink)}
+.flash{color:#A33B3B;font-weight:700;min-height:1.4em;margin:0 0 8px;font-size:.95rem}
+.chips{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:8px}
+.chips li{display:flex;gap:12px;align-items:center;background:var(--paper);border-radius:12px;padding:10px 14px;border:2px solid transparent;transition:border-color .2s,background .2s}
+.chips .dot{flex:none;width:26px;height:26px;border-radius:50%;border:2.5px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:.85rem;color:transparent}
+.chips li.used{border-color:var(--c)}
+.chips li.used .dot{background:var(--c);border-color:var(--c);color:#fff}
+.chips b{font-family:var(--display);font-weight:800;display:block;line-height:1.2}
+.chips small{color:var(--soft);font-size:.88rem}
+
+/* sent */
+.sent h2{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,7vw,4.2rem);line-height:.95;letter-spacing:-.03em;margin:0 0 12px}
+pre.report{white-space:pre-wrap;background:var(--paper);border-radius:14px;padding:20px;font-family:var(--body);font-size:.98rem;max-width:70ch;margin:0 0 22px}
+
+@media (max-width:760px){
+  .wrap{padding:26px 16px 48px}
+  .timer-wrap,.write-grid{grid-template-columns:1fr}
+  .clock{min-height:280px}
+  .name input{min-width:0;width:100%}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+  <section class="screen on" id="s-choose">
+    <h1>Research &amp; write</h1>
+    <p class="lede">A solo challenge. Here's how it works:</p>
+    <ol class="steps">
+      <li>Pick a question and get five expressions.</li>
+      <li>Research it online until the timer runs out.</li>
+      <li>Write a summary of what you learned, using all five expressions — no copying and pasting.</li>
+      <li>Send your summary to your teacher.</li>
+    </ol>
+    <div class="name" id="nameBox">
+      <label for="name">Your name</label>
+      <input id="name" autocomplete="given-name" placeholder="Type your name">
+      <span class="warn">Type your name before choosing a question.</span>
+    </div>
+    <div class="topics" id="topics"></div>
+  </section>
+
+  <section class="screen" id="s-brief">
+    <button class="back" data-go="choose">‹ Choose another question</button>
+    <div class="brief-head" id="briefHead"></div>
+    <h3>Your five expressions</h3>
+    <p class="sub">Use all of them in your summary.</p>
+    <ul class="exprs" id="exprs"></ul>
+    <div class="rules">
+      <p><b>Research</b> in any language, from any source.</p>
+      <p><b>Write</b> in English, in your own words: 120 to 200 words. Pasting is turned off in the summary box.</p>
+      <p>When the research time is over, the writing page opens automatically. You can't go back to research.</p>
+    </div>
+    <div class="controls">
+      <div class="mins" role="group" aria-label="Research time">
+        <span class="mins-label">Research time</span>
+        <button type="button" id="minus" aria-label="One minute less">−</button>
+        <input id="mins" type="number" inputmode="numeric" min="1" max="60" value="7" aria-label="Minutes">
+        <span>min</span>
+        <button type="button" id="more" aria-label="One minute more">+</button>
+      </div>
+      <button class="btn ghost" id="shuffle">Shuffle expressions</button>
+      <button class="btn main" id="start">Start research</button>
+    </div>
+  </section>
+
+  <section class="screen" id="s-timer">
+    <div class="timer-wrap">
+      <div class="clock" id="clock">
+        <div class="drain" id="drain"></div>
+        <div class="topic-name" id="tTopic"></div>
+        <div class="time" id="time">07:00</div>
+        <div id="tFind"></div>
+      </div>
+      <div class="side">
+        <h3>Keep these in mind</h3>
+        <ul class="mini" id="mini"></ul>
+        <div class="tctrl">
+          <button class="btn main" id="done">I'm ready to write</button>
+        </div>
+        <p class="note">Tip: keep this tab open and research in another one.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen write" id="s-write">
+    <div class="write-grid">
+      <div>
+        <h2>Now write what you learned.</h2>
+        <p class="sub" id="wTopic"></p>
+        <label for="summary" class="sub" style="display:block;margin-bottom:8px">Your summary (in your own words, 120–200 words)</label>
+        <textarea id="summary" spellcheck="false" placeholder="Start writing here…"></textarea>
+        <p class="flash" id="flash" role="status"></p>
+        <div class="meta">
+          <span><b id="words">0</b> words</span>
+          <span>Writing time <b id="wtime">00:00</b></span>
+        </div>
+        <div class="controls">
+          <button class="btn main" id="finish" disabled>Finish and send</button>
+        </div>
+        <p class="note" id="finishHint">Write at least 120 words to finish.</p>
+      </div>
+      <div>
+        <h3>Expressions</h3>
+        <p class="sub" id="count">0 of 5 used</p>
+        <ul class="chips" id="chips"></ul>
+        <h3>Your research questions</h3>
+        <div id="wFind"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="screen sent" id="s-sent">
+    <h2>Well done! Send it to your teacher.</h2>
+    <p class="sub">Tap the green button to send by WhatsApp, or copy and paste it wherever you prefer.</p>
+    <pre class="report" id="report"></pre>
+    <div class="controls">
+      <a class="btn wa" id="wa" target="_blank" rel="noopener">Send on WhatsApp</a>
+      <button class="btn ghost" id="copy">Copy summary</button>
+    </div>
+    <p class="note" id="copied" role="status"></p>
+  </section>
+
+</main>
+
+<script>
+// Número de WhatsApp da professora, só dígitos com DDI e DDD (ex.: "5522999999999").
+// Se ficar vazio, o WhatsApp abre para a aluna escolher o contato.
+const TEACHER_PHONE = "";
+
+const TOPICS = [
+  {id:"gossip", emoji:"🎬", tag:"Gossip", name:"Blake Lively vs. Justin Baldoni: what happened behind the scenes?", c:"#A33B6E",
+   hook:"From a romantic movie to a war in court",
+   find:["What was the movie 'It Ends With Us' and who worked on it?","What did each side accuse the other of?","Whose side is the public on — and what's the latest?"],
+   ex:[
+    ["spill the tea","share gossip or secret information","Everyone on TikTok wanted to spill the tea."],
+    ["take sides","support one person in an argument","Fans quickly took sides."],
+    ["throw shade","criticize someone in an indirect way","She threw shade at him in interviews."],
+    ["behind closed doors","in private, where the public can't see","Nobody knows what happened behind closed doors."],
+    ["fall out","stop being friends after an argument","They fell out during the filming."],
+    ["a war of words","a public fight with accusations","It became a war of words online."],
+    ["the last straw","the final problem that makes you react","That scene was the last straw for her."],
+    ["make headlines","appear in the news everywhere","The case made headlines for months."]
+   ]},
+  {id:"tech", emoji:"🤖", tag:"Technology", name:"Can you trust ChatGPT? When AI invents facts", c:"#24162B",
+   hook:"Confident, fast… and sometimes completely wrong",
+   find:["What are AI 'hallucinations' and why do they happen?","What real problems have they caused (a lawyer, a news story…)?","How can we use AI without being fooled?"],
+   ex:[
+    ["make things up","invent information that isn't true","Sometimes AI just makes things up."],
+    ["double-check","check something again to be sure","Always double-check the sources."],
+    ["jump to conclusions","decide something too fast, without all the facts","Don't jump to conclusions from one answer."],
+    ["at your fingertips","very easy to access","We have endless information at our fingertips."],
+    ["a blind spot","an area someone doesn't know or see well","AI has blind spots about recent events."],
+    ["cut corners","do something quickly and badly to save effort","The lawyer cut corners and used fake cases."],
+    ["a slippery slope","a small step that can lead to bigger problems","Trusting AI blindly is a slippery slope."],
+    ["take something at face value","believe something without questioning it","Never take an AI answer at face value."]
+   ]},
+  {id:"everyday", emoji:"🛍️", tag:"Everyday life", name:"The tricks supermarkets use to make you spend more", c:"#E8A33D", fg:"#24162B",
+   hook:"You went in for bread and came out with R$200",
+   find:["Where do supermarkets put products, and why?","What tricks do they use with prices, music and smells?","What can you do to avoid spending more than you planned?"],
+   ex:[
+    ["an impulse buy","something you buy without planning","Chocolate at the checkout is a classic impulse buy."],
+    ["catch your eye","get your attention","Bright colors are made to catch your eye."],
+    ["fall into the trap","be tricked into doing something","I always fall into the trap of '3 for 2' deals."],
+    ["think twice","think carefully before deciding","Think twice before buying the big pack."],
+    ["go over budget","spend more than you planned","I went over budget again this month."],
+    ["shop around","compare prices in different places","It pays to shop around."],
+    ["a bargain","something bought for a good, low price","It looks like a bargain, but it isn't."],
+    ["on a whim","suddenly, without thinking","I bought it on a whim."]
+   ]},
+  {id:"mental", emoji:"📲", tag:"Mental health", name:"Doomscrolling: why can't we stop scrolling at night?", c:"#5C7FA3",
+   hook:"Just one more video… it's 2 a.m.",
+   find:["What is doomscrolling and why is it so addictive?","What does it do to our sleep, mood and anxiety?","What do experts suggest to break the habit?"],
+   ex:[
+    ["lose track of time","forget how much time has passed","I lose track of time on Instagram."],
+    ["get hooked on","become addicted to something","It's easy to get hooked on short videos."],
+    ["wind down","relax before sleeping","Scrolling doesn't help you wind down."],
+    ["toss and turn","move a lot in bed because you can't sleep","After scrolling, I toss and turn for hours."],
+    ["a vicious circle","a bad situation that keeps making itself worse","Anxiety and scrolling become a vicious circle."],
+    ["switch off","stop thinking about things and relax","We need time to switch off."],
+    ["can't help (doing)","can't stop yourself from doing something","I can't help checking my phone."],
+    ["kick the habit","stop a bad habit","Leaving the phone outside the bedroom helps you kick the habit."]
+   ]},
+  {id:"travel", emoji:"📸", tag:"Travel", name:"Overtourism: are tourists ruining Venice?", c:"#7F9C7A",
+   hook:"Entry fees, crowds and angry locals",
+   find:["Why does Venice now charge tourists an entry fee?","How do locals feel about the crowds?","Should we still visit famous places — and how?"],
+   ex:[
+    ["a tourist trap","a place full of tourists, expensive and not authentic","Some restaurants there are total tourist traps."],
+    ["packed like sardines","extremely crowded","In summer, people are packed like sardines."],
+    ["a victim of its own success","harmed by being too popular","Venice is a victim of its own success."],
+    ["pay the price","suffer the consequences","Locals are paying the price."],
+    ["a bucket list","things you want to do before you die","Venice is on everyone's bucket list."],
+    ["off the beaten path","away from typical tourist places","Try places off the beaten path."],
+    ["picture-perfect","very beautiful, like a photo","Everyone wants the picture-perfect shot."],
+    ["get out of hand","become impossible to control","The crowds got out of hand."]
+   ]},
+  {id:"history", emoji:"⚗️", tag:"Women in history", name:"Marie Curie: two Nobel Prizes in a man's world", c:"#D9867E",
+   hook:"The first woman to win a Nobel",
+   find:["Who was she and what did she discover?","What difficulties did she face as a woman scientist?","What price did she pay for her work?"],
+   ex:[
+    ["pave the way for","make something possible for people who come later","She paved the way for women in science."],
+    ["against all odds","despite huge difficulties","Against all odds, she won two Nobel Prizes."],
+    ["a man's world","an area dominated by men","Science was a man's world in 1900."],
+    ["dedicate your life to","give all your time and energy to","She dedicated her life to research."],
+    ["groundbreaking","completely new and very important","Her work on radioactivity was groundbreaking."],
+    ["come at a price","have a serious cost","Her discoveries came at a price."],
+    ["in the face of","when dealing with a difficulty","She kept working in the face of prejudice."],
+    ["give up","stop trying","She never gave up."]
+   ]},
+  {id:"health", emoji:"☕", tag:"Health", name:"Coffee: good or bad for you?", c:"#6B4A3A",
+   hook:"Every year a new study says the opposite",
+   find:["What does science say about coffee's benefits?","What are the risks, and how much is too much?","So… should you drink it or not?"],
+   ex:[
+    ["in moderation","in a reasonable amount, not too much","Coffee is fine in moderation."],
+    ["cut down on","reduce how much you consume","Doctors say to cut down on sugar in coffee."],
+    ["a pick-me-up","something that gives you energy","Coffee is my afternoon pick-me-up."],
+    ["can't function without","need something to work normally","I can't function without my morning coffee."],
+    ["the jury is still out","there's no final answer yet","The jury is still out on some effects."],
+    ["a double-edged sword","something with good and bad sides","Caffeine is a double-edged sword."],
+    ["kick the habit","stop a habit","It's hard to kick the habit."],
+    ["too much of a good thing","something good that becomes bad in excess","Five cups is too much of a good thing."]
+   ]},
+  {id:"titanic", emoji:"🚢", tag:"True story", name:"The Titanic: could the disaster have been avoided?", c:"#3B1F3A",
+   hook:"April 1912 — the 'unsinkable' ship",
+   find:["What happened on the night it sank?","What mistakes and warnings were ignored?","What changed in the world after the disaster?"],
+   ex:[
+    ["a disaster waiting to happen","something that was very likely to go wrong","The lack of lifeboats was a disaster waiting to happen."],
+    ["turn a blind eye","ignore something you know is wrong","They turned a blind eye to the ice warnings."],
+    ["in hindsight","looking back, after it happened","In hindsight, they were going too fast."],
+    ["too little, too late","not enough and not in time","The rescue came too little, too late."],
+    ["cut corners","save time or money in a dangerous way","Did they cut corners on safety?"],
+    ["a close call","a situation where something bad almost happened","Some passengers had a close call."],
+    ["go down with the ship","stay until the end, even in failure","The captain went down with the ship."],
+    ["learn the hard way","learn from a painful experience","The world learned the hard way."]
+   ]},
+  {id:"love", emoji:"💘", tag:"Relationships", name:"Dating apps: did they make love easier or harder?", c:"#C2566B",
+   hook:"Swipe, match, ghost, repeat",
+   find:["How did dating apps change the way people meet?","What are the biggest complaints (ghosting, fake profiles…)?","Do relationships that start on apps last?"],
+   ex:[
+    ["hit it off","like each other immediately","We hit it off on our first date."],
+    ["ghost someone","suddenly stop answering someone","He ghosted me after two weeks."],
+    ["a red flag","a warning sign","No photos on the profile is a red flag."],
+    ["plenty of fish in the sea","many other possible partners","Don't worry, there are plenty of fish in the sea."],
+    ["play hard to get","pretend you're not interested","Some people play hard to get."],
+    ["sweep someone off their feet","make someone fall in love quickly","He swept her off her feet."],
+    ["a match made in heaven","a perfect couple","They're a match made in heaven."],
+    ["swipe right","show interest in someone on an app","I swiped right without thinking."]
+   ]},
+  {id:"work", emoji:"💼", tag:"Career", name:"'Quiet quitting': lazy or just smart?", c:"#3E6B5E",
+   hook:"Doing your job — and nothing more",
+   find:["What is quiet quitting and where did the term come from?","Why are so many young workers doing it?","Is it a healthy boundary or a bad career move?"],
+   ex:[
+    ["go the extra mile","do more than is expected","She used to go the extra mile every day."],
+    ["do the bare minimum","do only what is absolutely necessary","Quiet quitters do the bare minimum."],
+    ["pull your weight","do your fair share of the work","Some say they don't pull their weight."],
+    ["draw the line","set a limit on what you will accept","I draw the line at answering emails at night."],
+    ["burn out","become exhausted from too much work","Many workers burned out during the pandemic."],
+    ["clock out","finish your work time","When I clock out, I stop thinking about work."],
+    ["on the same page","in agreement","Managers and employees aren't on the same page."],
+    ["a dead-end job","a job with no chance of progress","Nobody goes the extra mile in a dead-end job."]
+   ]}
+];
+
+const $ = s => document.querySelector(s);
+
+const escHTML = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+let topic = null, picked = [], minutes = 7, total = 0, left = 0, tick = null, wtick = null, wsecs = 0, researched = 0, used = [];
+
+function go(id){
+  document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === "s-" + id));
+  window.scrollTo(0,0);
+}
+document.querySelectorAll("[data-go]").forEach(b => b.onclick = () => go(b.dataset.go));
+const paint = () => { document.body.style.setProperty("--c", topic.c); document.body.style.setProperty("--fg", topic.fg || "#fff"); };
+const findList = () => `<ul class="find">${topic.find.map(f => `<li>${f}</li>`).join("")}</ul>`;
+const studentName = () => $("#name").value.trim();
+
+// ---------- choose ----------
+function renderTopics(){
+  $("#topics").innerHTML = TOPICS.map(t =>
+  `<button class="topic" data-id="${t.id}" style="--c:${t.c};--fg:${t.fg||"#fff"}">
+     <span class="emoji" aria-hidden="true">${escHTML(t.emoji)}</span>
+     <span>${t.tag ? `<span class="tag">${escHTML(t.tag)}</span>` : ""}<strong>${escHTML(t.name)}</strong><span class="hook">${escHTML(t.hook)}</span></span>
+   </button>`).join("");
+}
+$("#name").oninput = () => $("#nameBox").classList.remove("need");
+$("#topics").onclick = e => {
+  const b = e.target.closest(".topic"); if(!b) return;
+  if(!studentName()){ $("#nameBox").classList.add("need"); $("#name").focus(); window.scrollTo({top:0,behavior:"smooth"}); return; }
+  topic = TOPICS.find(t => t.id === b.dataset.id);
+  deal(); showBrief();
+};
+
+function deal(){
+  const pool = [...topic.ex];
+  for(let i = pool.length - 1; i > 0; i--){ const j = Math.floor(Math.random()*(i+1)); [pool[i],pool[j]] = [pool[j],pool[i]]; }
+  picked = pool.slice(0,5);
+}
+function showBrief(){
+  paint();
+  $("#briefHead").innerHTML = `<span style="font-size:2rem" aria-hidden="true">${topic.emoji}</span><h2>${topic.name}</h2>${topic.find.length ? `<p class="find-label">Find out:</p>${findList()}` : ""}`;
+  $("#exprs").innerHTML = picked.map(([n,m,u]) =>
+    `<li><span class="ex-name">${n}</span><span class="ex-mean">${m}</span>${u ? `<span class="ex-use">“${u}”</span>` : ""}</li>`).join("");
+  go("brief");
+}
+$("#shuffle").onclick = () => { deal(); showBrief(); };
+const minsBox = $("#mins");
+const setMins = v => { minutes = Math.min(60, Math.max(1, Math.round(+v) || 7)); minsBox.value = minutes; };
+minsBox.onchange = () => setMins(minsBox.value);
+$("#minus").onclick = () => setMins(minutes - 1);
+$("#more").onclick = () => setMins(minutes + 1);
+
+// ---------- research timer ----------
+const fmt = s => String(Math.floor(s/60)).padStart(2,"0") + ":" + String(s%60).padStart(2,"0");
+function draw(){
+  $("#time").textContent = fmt(left);
+  $("#drain").style.transform = `scaleY(${1 - left/total})`;
+  $("#clock").classList.toggle("last", left <= 60 && left > 0);
+}
+$("#start").onclick = () => {
+  setMins(minsBox.value);
+  total = left = minutes * 60;
+  $("#tTopic").textContent = topic.emoji + "  " + topic.name;
+  $("#tFind").innerHTML = findList();
+  $("#mini").innerHTML = picked.map(([n,m]) => `<li><b>${n}</b><small>${m}</small></li>`).join("");
+  draw(); go("timer");
+  window.onbeforeunload = () => true;
+  tick = setInterval(() => {
+    left--; draw();
+    if(left <= 0){ clearInterval(tick); chime(); setTimeout(startWriting, 800); }
+  }, 1000);
+};
+$("#done").onclick = () => { clearInterval(tick); startWriting(); };
+
+function chime(){
+  try{
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [659, 784, 1047].forEach((f,i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain(), t = ctx.currentTime + i*0.18;
+      o.frequency.value = f;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.3, t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
+      o.connect(g).connect(ctx.destination); o.start(t); o.stop(t + 0.65);
+    });
+  }catch(e){}
+}
+
+// ---------- expression matching ----------
+const IRREG = {take:"took|taken",make:"made",go:"went|gone|goes",keep:"kept",come:"came",fall:"fell|fallen",get:"got|gotten",give:"gave|given",pay:"paid",stand:"stood",break:"broke|broken",wear:"wore|worn",rise:"rose|risen",run:"ran",throw:"threw|thrown",catch:"caught",think:"thought",lose:"lost",wind:"wound",sweep:"swept",draw:"drew|drawn",do:"did|done|does",burn:"burnt",learn:"learnt",spill:"spilt",fight:"fought",find:"found",buy:"bought",can:"could",is:"are|was|were|'s|remains?|seems?",your:"my|his|her|our|their|your|one's",their:"my|his|her|our|their|your|one's",its:"its|their",yourself:"myself|herself|himself|ourselves|themselves|yourselves|yourself|oneself"};
+const DET = "(?:a|an|the|this|that|these|those|my|your|her|his|their|our|its)";
+const esc = w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+// every form of a word: plural/3rd person, past, -ing (with dropped e and doubled consonant)
+function forms(w){
+  const f = new Set([w, w+"s", w+"es", w+"ed", w+"d", w+"ing"]);
+  if(/e$/.test(w)){ f.add(w.slice(0,-1)+"ing"); }
+  if(/[^aeiou]y$/.test(w)){ f.add(w.slice(0,-1)+"ies"); f.add(w.slice(0,-1)+"ied"); }
+  if(/(^|[^aeiou])[aeiou][^aeiouwxy]$/.test(w)){ const d = w + w.slice(-1); f.add(d+"ing"); f.add(d+"ed"); }
+  if(IRREG[w]) IRREG[w].split("|").forEach(x => f.add(x));
+  return [...f].sort((a,b) => b.length - a.length).map(x => esc(x).replace(/-/g, "[-\\s]?")).join("|");
+}
+function pattern(expr){
+  const words = expr.replace(/\(.*?\)/g, "").toLowerCase().replace(/[^a-z'\s-]/g, " ").trim().split(/\s+/);
+  // a leading "a/an/the" is optional ("blind spots", "total tourist traps")
+  if(words.length > 1 && /^(a|an|the)$/.test(words[0])) words.shift();
+  const parts = words.map(w => {
+    if(w === "someone" || w === "something" || w === "things") return "[\\w']+(?:\\s+[\\w']+){0,3}";
+    if(w === "a" || w === "an" || w === "the") return `(?:${DET}|[\\w]+'s)`;
+    if(w === "your" || w === "their" || w === "yourself" || w === "its") return `(?:${IRREG[w]})`;
+    return `(?:${forms(w)})`;
+  });
+  // words may be separated by spaces/commas, with one optional extra word in between ("takes a huge toll on")
+  return new RegExp("\\b" + parts.join("[\\s,]+(?:[\\w']+\\s+)?") + "\\b", "i");
+}
+
+// ---------- writing ----------
+function startWriting(){
+  researched = total - left;
+  $("#wTopic").textContent = topic.emoji + "  " + topic.name;
+  $("#wFind").innerHTML = findList();
+  $("#chips").innerHTML = picked.map(([n,m]) =>
+    `<li><span class="dot" aria-hidden="true">✓</span><span><b>${n}</b><small>${m}</small></span></li>`).join("");
+  picked.forEach(p => p.re = pattern(p[0]));
+  go("write");
+  $("#summary").focus();
+  wsecs = 0;
+  wtick = setInterval(() => { wsecs++; $("#wtime").textContent = fmt(wsecs); }, 1000);
+  check();
+}
+const wordCount = t => (t.trim().match(/[A-Za-zÀ-ÿ'’-]+/g) || []).length;
+function check(){
+  const t = $("#summary").value.replace(/’/g, "'");
+  used = picked.map(p => p.re.test(t));
+  document.querySelectorAll("#chips li").forEach((li, i) => li.classList.toggle("used", used[i]));
+  const n = used.filter(Boolean).length, w = wordCount(t);
+  $("#count").textContent = n === 5 ? "All 5 used!" : `${n} of 5 used`;
+  $("#words").textContent = w;
+  const ok = w >= 120;
+  $("#finish").disabled = !ok;
+  $("#finishHint").textContent = !ok ? `Write at least 120 words to finish (${120 - w} to go).`
+    : n < 5 ? `You can finish now, but you haven't used all five expressions yet.`
+    : w > 200 ? "You're over 200 words — try to cut a little." : "Looking good. Read it once more, then send.";
+}
+const box = $("#summary");
+box.addEventListener("input", check);
+["paste","drop"].forEach(ev => box.addEventListener(ev, e => {
+  e.preventDefault();
+  $("#flash").textContent = "Pasting is turned off. Write it in your own words.";
+  setTimeout(() => $("#flash").textContent = "", 3000);
+}));
+
+$("#finish").onclick = () => {
+  if(used.filter(Boolean).length < 5 && !confirm("You haven't used all five expressions. Send anyway?")) return;
+  clearInterval(wtick);
+  window.onbeforeunload = null;
+  const text = box.value.trim();
+  const report =
+`📝 Research & Write — ${studentName()}
+${topic.emoji} ${topic.name}
+
+Research: ${fmt(researched)} of ${fmt(total)}
+Writing: ${fmt(wsecs)} · ${wordCount(text)} words
+Expressions (${used.filter(Boolean).length}/5):
+${picked.map((p, i) => (used[i] ? "✅ " : "⬜ ") + p[0]).join("\n")}
+
+———
+${text}`;
+  $("#report").textContent = report;
+  $("#wa").href = `https://wa.me/${TEACHER_PHONE}?text=${encodeURIComponent(report)}`;
+  $("#copy").onclick = async () => {
+    try{ await navigator.clipboard.writeText(report); $("#copied").textContent = "Copied."; }
+    catch(e){
+      const r = document.createRange(); r.selectNodeContents($("#report"));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      $("#copied").textContent = "Selected — press Ctrl+C (or tap Copy) to copy.";
+    }
+  };
+  go("sent");
+};
+renderTopics();
+</script>
+</body>
+</html>
